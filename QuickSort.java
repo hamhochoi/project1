@@ -11,7 +11,7 @@
             A[b] = temp;
         }
 
-        static int partition(int A[], int first, int last){
+        static int increasePartition(int A[], int first, int last){
             int privot = (first+last)/2;
 
             int tempA[] = new int[A.length];
@@ -31,8 +31,9 @@
                 // Them phan tu A[privot]
 
             tempA[index] = A[privot];
-            int mid = index;
+            int mid = index;    // vi tri cua phan tu privot
             index++;
+            
                 // Tim nhung phan tu lon hon A[privot] dua sang ben phai cua day
 
             for (int i=first; i<=last; i++){
@@ -42,33 +43,95 @@
                 }
             }
 
-            int i=0;
-            while (tempA[i] != A[(first+last)/2]){
-                i++;
-            }
+//            int i=0;
+//            while (tempA[i] != A[(first+last)/2]){
+//                i++;
+//            }
 
             for (int j=first; j<=last; j++){
                 A[j] = tempA[j];
             }
 
 
-            privot = i;
+            privot = mid;
 
             return privot;
 
         }
 
-        static void quickSort(int A[],int first,int last) {
+        static int decreasePartition(int A[], int first, int last){
+            int privot = (first+last)/2;
+
+            int tempA[] = new int[A.length];
+            int index = first;
+
+            // Chia 2 nua theo privot
+
+                // Tim nhung phan tu nho hon A[privot] dua sang ben trai
+
+            for (int i=first; i<=last; i++){
+                if (i!=privot && A[i] >= A[privot]){
+                    tempA[index] = A[i];
+                    index++;
+                }
+            }
+
+                // Them phan tu A[privot]
+
+            tempA[index] = A[privot];
+            int mid = index;    // vi tri cua phan tu privot
+            index++;
+            
+                // Tim nhung phan tu lon hon A[privot] dua sang ben phai cua day
+
+            for (int i=first; i<=last; i++){
+                if (i!=privot && A[i] < A[privot]){
+                    tempA[index] = A[i];
+                    index++;
+                }
+            }
+
+//            int i=0;
+//            while (tempA[i] != A[(first+last)/2]){
+//                i++;
+//            }
+
+            for (int j=first; j<=last; j++){
+                A[j] = tempA[j];
+            }
+
+
+            privot = mid;
+
+            return privot;
+
+        }
+        
+        
+        static void increaseQuickSort(int A[],int first,int last) {
 
             if (first < last) {
 
-                int privot = partition(A, first, last);
+                int privot = increasePartition(A, first, last);
 
-                quickSort(A, first, privot - 1);
-                quickSort(A, privot + 1, last);
+                increaseQuickSort(A, first, privot - 1);
+                increaseQuickSort(A, privot + 1, last);
 
             }
         }
+        
+        static void decreaseQuickSort(int A[],int first,int last) {
+
+            if (first < last) {
+
+                int privot = decreasePartition(A, first, last);
+
+                decreaseQuickSort(A, first, privot - 1);
+                decreaseQuickSort(A, privot + 1, last);
+            }
+        }
+        
+        
 
 
         public static void main(String args[]){
@@ -77,8 +140,22 @@
 
             System.out.println("Nhap vao kich thuoc day");
 
-            Scanner scan = new Scanner(System.in);
-            int N = scan.nextInt();
+            int N = 0;
+            Scanner scan = null;
+
+            try {
+
+                scan = new Scanner(System.in);
+                N = scan.nextInt();
+            } catch (Exception e) {
+                System.out.println("Loi nhap kich thuoc cua day, xin vui long nhap lai!");
+                System.exit(0);
+            }
+
+            if (N<=0){
+                System.out.println("Gia tri nhap khong hop le, vui long nhap lai!");
+                System.exit(0);
+            }
 
             int A[] = new int[N];
 
@@ -88,10 +165,19 @@
                 A[i] = scan.nextInt();
             }
 
+            System.out.println("Nhap vao chuc nang: ");
+            System.out.println("1. Sap xep tang dan.");
+            System.out.println("2. Sap xep giam dan.");
+            
+            int m = scan.nextInt();
+            
             scan.close();
             long startTime = System.currentTimeMillis();
-
-            quickSort(A,0,N-1);
+            if (m == 1){
+                increaseQuickSort(A, 0, N-1);
+            }
+            else 
+                decreaseQuickSort(A,0,N-1);
 
             long endTime = System.currentTimeMillis();
 
@@ -102,11 +188,8 @@
 
             System.out.println();
 
-
             long totalTime = endTime-startTime;
             System.out.println("Thoi gian chay :");
             System.out.printf("%d miliseconds",totalTime);
         }
-
-
     }
